@@ -1,61 +1,122 @@
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.IntStream;
-
 public class TicTacToeGrid {
-    Cell[][] grid;
-    List<Cell> gridList;
+    private final char[][] grid;
+    private char playerTurn;
+    private String gridStatus;
 
     public TicTacToeGrid() {
-        this.grid = createTicTacToeGrid();
-        this.gridList = create();
+        this.grid = createGrid();
+        this.playerTurn = 'X';
+        this.gridStatus = "Game not finished";
     }
 
+    private char[][] createGrid() {
+        return new char[][]{{' ', ' ', ' '}, {' ', ' ', ' '}, {' ', ' ', ' '}};
+    }
 
-    private Cell[][] createTicTacToeGrid() {
-        Cell[][] grid = new Cell[3][3];
-        for (int row = 0; row < 3; row++) {
-            for (int column = 0; column < 3; column++) {
-                grid[row][column] = new Cell(row + 1, column + 1);
+    public void printGrid() {
+        System.out.println("---------");
+        for (char[] row : grid) {
+            System.out.print("| ");
+            for (char column : row) {
+                System.out.print(column + " ");
+            }
+            System.out.println("|");
+        }
+        System.out.println("---------");
+    }
+
+    private boolean checkFor3InRow(char player) {
+        for (char[] row : grid) {
+            if (row[0] == player && row[1] == player && row[2] == player) {
+                return true;
             }
         }
-        return grid;
+        return false;
     }
 
-    private List<Cell> create() {
-        List<Cell> cells = new ArrayList<>();
-        IntStream.rangeClosed(1, 3)
-                .forEach(row -> IntStream.rangeClosed(1, 3)
-                        .forEach(column -> cells.add(new Cell(row, column))));
-        return cells;
+    private boolean checkFor3InColumn(char player) {
+        return grid[0][0] == player && grid[1][0] == player && grid[2][0] == player ||
+                grid[0][1] == player && grid[1][1] == player && grid[2][1] == player ||
+                grid[0][2] == player && grid[1][2] == player && grid[2][2] == player;
+
     }
 
-    public void printTicTacToeGrid() {
-        System.out.println("---------");
-        IntStream.rangeClosed(1, 3)
-                .forEach(row -> printRow(row));
-        System.out.println("---------");
+    private boolean checkFor3InDiagonal(char player) {
+        return grid[0][0] == player && grid[1][1] == player && grid[2][2] == player ||
+                grid[0][2] == player && grid[1][1] == player && grid[2][0] == player;
     }
 
-    private void printRow(int row) {
-        System.out.print("| ");
-        IntStream.rangeClosed(1, 3)
-                .forEach(column -> System.out.print(getCell(row, column).getCellStatus() + " "));
-        System.out.println("|");
+    private boolean checkForEmptyCells() {
+        for (char[] row : grid) {
+            for (char column : row) {
+                if (column == '_' || column == ' ') {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
-    private Cell getCell(int row, int column) {
-        return gridList.stream()
-                .filter(cell -> cell.getRow() == row && cell.getColumn() == column)
-                .findAny()
-                .get();
+    public void updateGrid(int[] coordinates) {
+        grid[coordinates[0] - 1][coordinates[1] - 1] = playerTurn;
+        updateGridState();
+        changePlayerTurn();
     }
 
-    public void setCellStatus(int row, int colum, char cellStatus) {
-        gridList.stream()
-                .filter(cell -> cell.getRow() == row && cell.getColumn() == colum)
-                .findAny()
-                .get()
-                .setCellStatus(cellStatus);
+    public boolean isOccupied(int[] coordinates) {
+        return grid[coordinates[0] - 1][coordinates[1] - 1] == 'X' ||
+                grid[coordinates[0] - 1][coordinates[1] - 1] == 'O';
     }
+
+    private void updateGridState() {
+        boolean is3StraightX = checkFor3InRow('X') || checkFor3InColumn('X') ||
+                checkFor3InDiagonal('X');
+        boolean is3StraightO = checkFor3InRow('O') || checkFor3InColumn('O') ||
+                checkFor3InDiagonal('O');
+        boolean isInvalidTurns = checkForInvalidTurns();
+        boolean isEmptyCells = checkForEmptyCells();
+        if (is3StraightX && is3StraightO || isInvalidTurns) {
+            gridStatus = "Impossible";
+        } else if (is3StraightX) {
+            gridStatus = "X wins";
+        } else if (is3StraightO) {
+            gridStatus = "O wins";
+        } else if (isEmptyCells) {
+            gridStatus = "Game not finished";
+        } else {
+            gridStatus = "Draw";
+        }
+    }
+
+    public String getGridStatus() {
+        return gridStatus;
+    }
+
+    public boolean checkForInvalidTurns() {
+        int xCount = 0;
+        int oCount = 0;
+        for (char[] row : grid) {
+            for (char column : row) {
+                if (column == 'X') {
+                    xCount++;
+                }
+                if (column == 'O') {
+                    oCount++;
+                }
+            }
+        }
+        return Math.abs(xCount - oCount) > 1;
+    }
+
+    private void changePlayerTurn() {
+        playerTurn = playerTurn == 'X' ? 'O' : 'X';
+    }
+
+
+
+
+
+
+
+
 }

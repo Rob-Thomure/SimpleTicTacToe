@@ -4,23 +4,27 @@ public class GridState {
     }
 
     public String setGridState(char[][] gameGrid) {
-        boolean is3StraightX = checkFor3InRow('X', gameGrid) || checkFor3InColumn('X', gameGrid) ||
-                checkFor3InDiagonal('X', gameGrid);
-        boolean is3StraightO = checkFor3InRow('O', gameGrid) || checkFor3InColumn('O', gameGrid) ||
-                checkFor3InDiagonal('O', gameGrid);
-        boolean isInvalidTurns = checkForInvalidTurns(gameGrid);
-        boolean isEmptyCells = checkForEmptyCells(gameGrid);
-        if (is3StraightX && is3StraightO || isInvalidTurns) {
+        if (is3StraightX(gameGrid) && is3StraightO(gameGrid) || isInvalidTurns(gameGrid)) {
             return  "Impossible";
-        } else if (is3StraightX) {
+        } else if (is3StraightX(gameGrid)) {
             return  "X wins";
-        } else if (is3StraightO) {
+        } else if (is3StraightO(gameGrid)) {
             return  "O wins";
-        } else if (isEmptyCells) {
+        } else if (isEmptyCells(gameGrid)) {
             return  "Game not finished";
         } else {
             return  "Draw";
         }
+    }
+
+    private boolean is3StraightX(char[][] gameGrid) {
+        return checkFor3InRow('X', gameGrid) || checkFor3InColumn('X', gameGrid) ||
+                checkFor3InDiagonal('X', gameGrid);
+    }
+
+    private boolean is3StraightO(char[][] gameGrid) {
+        return checkFor3InRow('O', gameGrid) || checkFor3InColumn('O', gameGrid) ||
+                checkFor3InDiagonal('O', gameGrid);
     }
 
     private boolean checkFor3InRow(char player, char[][] gameGrid) {
@@ -44,7 +48,7 @@ public class GridState {
                 gameGrid[0][2] == player && gameGrid[1][1] == player && gameGrid[2][0] == player;
     }
 
-    private boolean checkForInvalidTurns(char[][] gameGrid) {
+    private boolean isInvalidTurns(char[][] gameGrid) {
         int xCount = 0;
         int oCount = 0;
         for (char[] row : gameGrid) {
@@ -60,7 +64,7 @@ public class GridState {
         return Math.abs(xCount - oCount) > 1;
     }
 
-    private boolean checkForEmptyCells(char[][] gameGrid) {
+    private boolean isEmptyCells(char[][] gameGrid) {
         for (char[] row : gameGrid) {
             for (char column : row) {
                 if (column == '_' || column == ' ') {

@@ -27,27 +27,6 @@ public class GridState {
                 checkFor3InDiagonal('O', gameGrid);
     }
 
-    private boolean checkFor3InRow(char player, char[][] gameGrid) {
-        for (char[] row : gameGrid) {
-            if (row[0] == player && row[1] == player && row[2] == player) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private boolean checkFor3InColumn(char player, char[][] gameGrid) {
-        return gameGrid[0][0] == player && gameGrid[1][0] == player && gameGrid[2][0] == player ||
-                gameGrid[0][1] == player && gameGrid[1][1] == player && gameGrid[2][1] == player ||
-                gameGrid[0][2] == player && gameGrid[1][2] == player && gameGrid[2][2] == player;
-
-    }
-
-    private boolean checkFor3InDiagonal(char player, char[][] gameGrid) {
-        return gameGrid[0][0] == player && gameGrid[1][1] == player && gameGrid[2][2] == player ||
-                gameGrid[0][2] == player && gameGrid[1][1] == player && gameGrid[2][0] == player;
-    }
-
     private boolean isInvalidTurns(char[][] gameGrid) {
         int xCount = 0;
         int oCount = 0;
@@ -73,6 +52,27 @@ public class GridState {
             }
         }
         return false;
+    }
+
+    private boolean checkFor3InRow(char player, char[][] gameGrid) {
+        for (char[] row : gameGrid) {
+            if (row[0] == player && row[1] == player && row[2] == player) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean checkFor3InColumn(char player, char[][] gameGrid) {
+        return gameGrid[0][0] == player && gameGrid[1][0] == player && gameGrid[2][0] == player ||
+                gameGrid[0][1] == player && gameGrid[1][1] == player && gameGrid[2][1] == player ||
+                gameGrid[0][2] == player && gameGrid[1][2] == player && gameGrid[2][2] == player;
+
+    }
+
+    private boolean checkFor3InDiagonal(char player, char[][] gameGrid) {
+        return gameGrid[0][0] == player && gameGrid[1][1] == player && gameGrid[2][2] == player ||
+                gameGrid[0][2] == player && gameGrid[1][1] == player && gameGrid[2][0] == player;
     }
 
 }
